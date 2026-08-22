@@ -242,27 +242,103 @@ export default function CustomerDashboard({ user }) {
                 )}
 
 
-                {/* Real-time Order Progression Stepper */}
+                {/* Real-time Order Progression Stepper with Rich Icons */}
                 {order.status !== 'CANCELLED' && (
-                  <div className="timeline-stepper">
-                    <div className={`timeline-step ${step >= 1 ? 'step-active' : ''}`}>
-                      <div className="step-icon">1</div>
-                      <span className="step-label">1. Order Placed</span>
-                    </div>
-                    <div className={`timeline-step ${step >= 2 ? 'step-active' : ''}`}>
-                      <div className="step-icon">2</div>
-                      <span className="step-label">2. Confirmed & Prep</span>
-                    </div>
-                    <div className={`timeline-step ${step >= 3 ? 'step-active' : ''}`}>
-                      <div className="step-icon">3</div>
-                      <span className="step-label">{order.orderType === 'STORE_PICKUP' ? '3. Ready at Counter' : '3. Dispatched'}</span>
-                    </div>
-                    <div className={`timeline-step ${step >= 4 ? 'step-active' : ''}`}>
-                      <div className="step-icon">4</div>
-                      <span className="step-label">4. Delivered</span>
+                  <div style={{ 
+                    background: 'rgba(15, 23, 42, 0.6)', 
+                    border: '1px solid var(--border-glass)', 
+                    borderRadius: 'var(--radius-md)', 
+                    padding: '16px 20px', 
+                    marginBottom: 20 
+                  }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+                      {/* Step 1 */}
+                      <div style={{ textAlign: 'center', opacity: step >= 1 ? 1 : 0.45 }}>
+                        <div style={{ 
+                          width: 42, 
+                          height: 42, 
+                          borderRadius: '50%', 
+                          background: step >= 1 ? 'var(--primary)' : 'rgba(255,255,255,0.08)', 
+                          color: step >= 1 ? '#fff' : 'var(--text-muted)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          margin: '0 auto 8px',
+                          boxShadow: step >= 1 ? '0 0 16px rgba(16,185,129,0.5)' : 'none'
+                        }}>
+                          <ShoppingBag size={20} />
+                        </div>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: step >= 1 ? '#fff' : 'var(--text-muted)', display: 'block' }}>1. Order Placed</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Confirmed</span>
+                      </div>
+
+                      {/* Step 2 */}
+                      <div style={{ textAlign: 'center', opacity: step >= 2 ? 1 : 0.45 }}>
+                        <div style={{ 
+                          width: 42, 
+                          height: 42, 
+                          borderRadius: '50%', 
+                          background: step >= 2 ? 'var(--primary)' : 'rgba(255,255,255,0.08)', 
+                          color: step >= 2 ? '#fff' : 'var(--text-muted)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          margin: '0 auto 8px',
+                          boxShadow: step >= 2 ? '0 0 16px rgba(16,185,129,0.5)' : 'none'
+                        }}>
+                          <Package size={20} />
+                        </div>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: step >= 2 ? '#fff' : 'var(--text-muted)', display: 'block' }}>2. Confirmed & Prep</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Packing in Store</span>
+                      </div>
+
+                      {/* Step 3 */}
+                      <div style={{ textAlign: 'center', opacity: step >= 3 ? 1 : 0.45 }}>
+                        <div style={{ 
+                          width: 42, 
+                          height: 42, 
+                          borderRadius: '50%', 
+                          background: step >= 3 ? 'var(--primary)' : 'rgba(255,255,255,0.08)', 
+                          color: step >= 3 ? '#fff' : 'var(--text-muted)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          margin: '0 auto 8px',
+                          boxShadow: step >= 3 ? '0 0 16px rgba(16,185,129,0.5)' : 'none'
+                        }}>
+                          {order.orderType === 'STORE_PICKUP' ? <Store size={20} /> : <Truck size={20} />}
+                        </div>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: step >= 3 ? '#fff' : 'var(--text-muted)', display: 'block' }}>
+                          {order.orderType === 'STORE_PICKUP' ? '3. Ready at Counter' : '3. Dispatched'}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          {order.orderType === 'STORE_PICKUP' ? 'Pickup Ready' : 'En Route'}
+                        </span>
+                      </div>
+
+                      {/* Step 4 */}
+                      <div style={{ textAlign: 'center', opacity: step >= 4 ? 1 : 0.45 }}>
+                        <div style={{ 
+                          width: 42, 
+                          height: 42, 
+                          borderRadius: '50%', 
+                          background: step >= 4 ? 'var(--primary)' : 'rgba(255,255,255,0.08)', 
+                          color: step >= 4 ? '#fff' : 'var(--text-muted)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          margin: '0 auto 8px',
+                          boxShadow: step >= 4 ? '0 0 16px rgba(16,185,129,0.5)' : 'none'
+                        }}>
+                          <CheckCircle2 size={20} />
+                        </div>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: step >= 4 ? '#fff' : 'var(--text-muted)', display: 'block' }}>4. Delivered</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Completed</span>
+                      </div>
                     </div>
                   </div>
                 )}
+
 
                 {/* Order Items List */}
                 <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', padding: 12 }}>
