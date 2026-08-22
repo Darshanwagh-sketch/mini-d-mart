@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
 export const getToken = () => localStorage.getItem('minidmart_token');
 export const setToken = (token) => localStorage.setItem('minidmart_token', token);
@@ -15,10 +15,12 @@ export const apiFetch = async (endpoint, options = {}) => {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const response = await fetch(`${API_BASE}${cleanEndpoint}`, {
     ...options,
     headers,
   });
+
 
   if (response.status === 401) {
     // Unauthorized
