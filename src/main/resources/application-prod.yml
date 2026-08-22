@@ -2,24 +2,29 @@ server:
   port: ${PORT:8080}
 
 spring:
+  application:
+    name: mini-d-mart
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mini_dmart}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:Darshan}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:${DB_URL:jdbc:postgresql://localhost:5432/mini_dmart}}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:Darshan}}
     driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
 jwt:
   secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
-  expirationMs: 86400000
+  expirationMs: ${JWT_EXPIRATION_MS:86400000}
 
 logging:
   level:
     com.example.mini_dmart: INFO
+
