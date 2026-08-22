@@ -177,6 +177,58 @@ export default function CustomerDashboard({ user }) {
                   </div>
                 )}
 
+                {/* Live Delivery Tracking Details Card */}
+                {order.orderType === 'HOME_DELIVERY' && order.status !== 'CANCELLED' && (
+                  <div style={{ 
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95))', 
+                    border: '1px solid rgba(59, 130, 246, 0.3)', 
+                    borderRadius: 'var(--radius-md)', 
+                    padding: 16, 
+                    marginBottom: 20,
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)' 
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10, marginBottom: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Truck size={18} style={{ color: 'var(--accent-purple)' }} />
+                        <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Live Express Delivery Tracking</span>
+                      </div>
+                      {order.trackingNumber && (
+                        <span style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#a5b4fc', fontSize: '0.75rem', padding: '3px 10px', borderRadius: 'var(--radius-full)', fontWeight: 700 }}>
+                          ID: {order.trackingNumber}
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Estimated Arrival</span>
+                        <strong style={{ fontSize: '1rem', color: 'var(--primary)' }}>{order.estimatedDeliveryTime || '25-35 Mins'}</strong>
+                      </div>
+
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Delivery Partner</span>
+                        <strong style={{ fontSize: '0.9rem', color: '#fff' }}>{order.deliveryPartner || 'D-Mart Express Rider'}</strong>
+                      </div>
+
+                      {order.deliveryRiderName && (
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: 2 }}>Assigned Rider</span>
+                          <strong style={{ fontSize: '0.9rem', color: '#fff' }}>{order.deliveryRiderName}</strong>
+                          {order.deliveryRiderPhone && (
+                            <a 
+                              href={`tel:${order.deliveryRiderPhone}`} 
+                              style={{ display: 'inline-block', marginTop: 4, fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'underline', fontWeight: 700 }}
+                            >
+                              📞 Call Rider ({order.deliveryRiderPhone})
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+
                 {/* Real-time Order Progression Stepper */}
                 {order.status !== 'CANCELLED' && (
                   <div className="timeline-stepper">

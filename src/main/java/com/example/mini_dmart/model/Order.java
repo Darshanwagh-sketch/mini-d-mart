@@ -48,6 +48,22 @@ public class Order {
 
     private String pickupCode; // 6 digit alphanumeric code for store pickup
 
+    // Delivery Tracking Properties
+    private String trackingNumber;
+
+    private String deliveryPartner;
+
+    private String deliveryRiderName;
+
+    private String deliveryRiderPhone;
+
+    private String estimatedDeliveryTime;
+
+    private Double currentLatitude;
+
+    private Double currentLongitude;
+
+
     @Column(nullable = false)
     private BigDecimal subtotalAmount;
 

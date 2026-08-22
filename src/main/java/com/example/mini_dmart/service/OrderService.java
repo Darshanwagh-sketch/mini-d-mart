@@ -48,7 +48,15 @@ public class OrderService {
                 .notes(request.getNotes())
                 .build();
 
-        if (request.getOrderType() == OrderType.STORE_PICKUP) {
+        if (request.getOrderType() == OrderType.HOME_DELIVERY) {
+            order.setTrackingNumber("TRK-DMART-" + generatePickupCode());
+            order.setDeliveryPartner("D-Mart Express Rider");
+            order.setDeliveryRiderName("Ramesh Kumar (Express Delivery)");
+            order.setDeliveryRiderPhone("+91 98201 55443");
+            order.setEstimatedDeliveryTime("25-35 Mins");
+            order.setCurrentLatitude(19.1176);
+            order.setCurrentLongitude(72.9060);
+        } else if (request.getOrderType() == OrderType.STORE_PICKUP) {
             if (request.getStoreLocationId() == null) {
                 throw new IllegalArgumentException("Store location required for store pickup");
             }
@@ -57,6 +65,7 @@ public class OrderService {
             order.setStoreLocation(store);
             order.setPickupCode("PK-" + generatePickupCode());
         }
+
 
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
@@ -174,11 +183,30 @@ public class OrderService {
             order.setNotes(notes);
         }
 
+        if (order.getOrderType() == OrderType.HOME_DELIVERY) {
+            if (order.getTrackingNumber() == null || order.getTrackingNumber().isBlank()) {
+                order.setTrackingNumber("TRK-DMART-" + generatePickupCode());
+            }
+            if (order.getDeliveryPartner() == null) {
+                order.setDeliveryPartner("D-Mart Express Rider");
+            }
+            if (order.getDeliveryRiderName() == null) {
+                order.setDeliveryRiderName("Ramesh Kumar (Express Delivery)");
+                order.setDeliveryRiderPhone("+91 98201 55443");
+            }
+            if (newStatus == OrderStatus.OUT_FOR_DELIVERY) {
+                order.setEstimatedDeliveryTime("15-25 Mins (Rider En Route)");
+            } else if (newStatus == OrderStatus.DELIVERED) {
+                order.setEstimatedDeliveryTime("Delivered");
+            }
+        }
+
         Order updatedOrder = orderRepository.save(order);
         auditService.logAction("UPDATE_ORDER_STATUS", "Order", updatedOrder.getId().toString(), 
                 "Updated status of order " + order.getOrderNumber() + " to " + newStatus);
         return updatedOrder;
     }
+
 
     private String generatePickupCode() {
         SecureRandom random = new SecureRandom();
