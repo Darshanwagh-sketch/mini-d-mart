@@ -35,10 +35,11 @@ public class AuthService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole() != null ? request.getRole() : Role.ROLE_CUSTOMER)
+                .role(Role.ROLE_CUSTOMER)
                 .phone(request.getPhone())
                 .address(request.getAddress())
                 .build();
+
 
         userRepository.save(user);
         auditService.logAction("USER_REGISTER", "User", user.getId().toString(), "Registered user: " + user.getEmail());
