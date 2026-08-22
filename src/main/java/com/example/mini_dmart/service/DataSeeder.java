@@ -22,9 +22,12 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() == 0) {
+
+        if (storeLocationRepository.count() == 0) {
             seedStores();
-            seedUsers();
+        }
+        seedUsers();
+        if (categoryRepository.count() == 0) {
             seedCatalog();
         }
     }
@@ -58,35 +61,43 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        User admin = User.builder()
-                .email("admin@minidmart.com")
-                .password(passwordEncoder.encode("Admin@123"))
-                .fullName("Rajesh Sharma (Admin)")
-                .role(Role.ROLE_ADMIN)
-                .phone("+91 98190 00001")
-                .address("Powai Central HQ, Mumbai")
-                .build();
+        if (!userRepository.existsByEmail("admin@minidmart.com")) {
+            User admin = User.builder()
+                    .email("admin@minidmart.com")
+                    .password(passwordEncoder.encode("Admin@123"))
+                    .fullName("Rajesh Sharma (Admin)")
+                    .role(Role.ROLE_ADMIN)
+                    .phone("+91 98190 00001")
+                    .address("Powai Central HQ, Mumbai")
+                    .build();
+            userRepository.save(admin);
+        }
 
-        User staff = User.builder()
-                .email("staff@minidmart.com")
-                .password(passwordEncoder.encode("Staff@123"))
-                .fullName("Priya Patel (Staff)")
-                .role(Role.ROLE_STAFF)
-                .phone("+91 98190 00002")
-                .address("Powai Store Fulfillment Unit")
-                .build();
+        if (!userRepository.existsByEmail("staff@minidmart.com")) {
+            User staff = User.builder()
+                    .email("staff@minidmart.com")
+                    .password(passwordEncoder.encode("Staff@123"))
+                    .fullName("Priya Patel (Staff)")
+                    .role(Role.ROLE_STAFF)
+                    .phone("+91 98190 00002")
+                    .address("Powai Store Fulfillment Unit")
+                    .build();
+            userRepository.save(staff);
+        }
 
-        User customer = User.builder()
-                .email("customer@minidmart.com")
-                .password(passwordEncoder.encode("Customer@123"))
-                .fullName("Darshan Kumar (Customer)")
-                .role(Role.ROLE_CUSTOMER)
-                .phone("+91 98190 00003")
-                .address("Flat 402, Green Acres Apt, Powai, Mumbai")
-                .build();
-
-        userRepository.saveAll(List.of(admin, staff, customer));
+        if (!userRepository.existsByEmail("customer@minidmart.com")) {
+            User customer = User.builder()
+                    .email("customer@minidmart.com")
+                    .password(passwordEncoder.encode("Customer@123"))
+                    .fullName("Darshan Kumar (Customer)")
+                    .role(Role.ROLE_CUSTOMER)
+                    .phone("+91 98190 00003")
+                    .address("Flat 402, Green Acres Apt, Powai, Mumbai")
+                    .build();
+            userRepository.save(customer);
+        }
     }
+
 
     private void seedCatalog() {
         // Categories
