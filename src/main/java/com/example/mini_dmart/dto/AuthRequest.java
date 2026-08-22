@@ -31,7 +31,6 @@ public class AuthRequest {
         @NotBlank
         private String password;
 
-        private Role role = Role.ROLE_CUSTOMER;
         private String phone;
         private String address;
 
@@ -41,11 +40,10 @@ public class AuthRequest {
         public void setEmail(String email) { this.email = email; }
         public String getPassword() { return password; }
         public void setPassword(String password) { this.password = password; }
-        public Role getRole() { return role; }
-        public void setRole(Role role) { this.role = role; }
         public String getPhone() { return phone; }
         public void setPhone(String phone) { this.phone = phone; }
         public String getAddress() { return address; }
         public void setAddress(String address) { this.address = address; }
     }
+
 }
