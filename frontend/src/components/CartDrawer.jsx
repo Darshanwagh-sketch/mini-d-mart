@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, Store, Truck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { X, Trash2, Plus, Minus, Store, Truck, ArrowRight, CheckCircle2, Package, Home, Navigation, ShoppingBag } from 'lucide-react';
 
 export default function CartDrawer({ 
   isOpen, 
@@ -10,7 +10,8 @@ export default function CartDrawer({
   onClearCart, 
   stores, 
   selectedStore, 
-  onPlaceOrder 
+  onPlaceOrder,
+  onTrackOrder
 }) {
   const [orderType, setOrderType] = useState('HOME_DELIVERY');
   const [storeId, setStoreId] = useState(selectedStore?.id || stores[0]?.id || 1);
@@ -58,26 +59,100 @@ export default function CartDrawer({
         </div>
 
         {placedOrder ? (
-          <div style={{ padding: 32, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <CheckCircle2 size={64} style={{ color: 'var(--primary)', marginBottom: 16 }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 8 }}>Order Placed Successfully!</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 20 }}>
-              Order No: <strong style={{ color: 'var(--primary)' }}>{placedOrder.orderNumber}</strong>
+          <div style={{ padding: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, overflowY: 'auto' }}>
+            <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'rgba(16,185,129,0.15)', border: '2px solid var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', marginBottom: 14, boxShadow: '0 0 25px rgba(16,185,129,0.4)' }}>
+              <CheckCircle2 size={40} />
+            </div>
+            
+            <span style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              ⚡ Order Confirmed & Active
+            </span>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '4px 0 6px', color: '#fff' }}>
+              Order #{placedOrder.orderNumber}
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', marginBottom: 20 }}>
+              Thank you! Your order is being processed by D-Mart Store staff.
             </p>
 
+            {/* Store Pickup Verification Code Card */}
             {placedOrder.orderType === 'STORE_PICKUP' && (
-              <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid var(--primary)', padding: 16, borderRadius: 'var(--radius-md)', width: '100%', marginBottom: 24 }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase' }}>Store Pickup Verification Code</span>
+              <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid var(--primary)', padding: 16, borderRadius: 'var(--radius-md)', width: '100%', marginBottom: 20 }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase' }}>Store Pickup Code</span>
                 <h1 style={{ fontSize: '2rem', letterSpacing: 4, color: '#fff', margin: '4px 0' }}>{placedOrder.pickupCode}</h1>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Show this 6-digit code at store counter for instant collection.</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Show code at store counter for instant collection.</p>
               </div>
             )}
 
-            <button className="btn btn-primary" onClick={() => { setPlacedOrder(null); onClose(); }}>
-              Continue Shopping
-            </button>
+            {/* Live Visual Order Progress Slide with Stage Icons */}
+            <div style={{ background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(59, 130, 246, 0.3)', padding: 16, borderRadius: 'var(--radius-md)', width: '100%', marginBottom: 24, textAlign: 'left' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: 14 }}>
+                Live Fulfillment Progression
+              </span>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 6, position: 'relative' }}>
+                {/* Step 1: Placed */}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px', boxShadow: '0 0 12px rgba(16,185,129,0.5)' }}>
+                    <ShoppingBag size={18} />
+                  </div>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#fff', display: 'block' }}>1. Placed</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Confirmed</span>
+                </div>
+
+                {/* Step 2: Packing */}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px' }}>
+                    <Package size={18} />
+                  </div>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block' }}>2. Packing</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>In Store</span>
+                </div>
+
+                {/* Step 3: Dispatched */}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px' }}>
+                    <Truck size={18} />
+                  </div>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block' }}>3. Dispatched</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>En Route</span>
+                </div>
+
+                {/* Step 4: Delivered */}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px' }}>
+                    <Home size={18} />
+                  </div>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block' }}>4. Delivered</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>Doorstep</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+              <button 
+                className="btn btn-primary" 
+                onClick={() => {
+                  if (onTrackOrder) onTrackOrder(placedOrder);
+                  setPlacedOrder(null);
+                  onClose();
+                }}
+                style={{ width: '100%', padding: '12px', fontSize: '0.92rem', fontWeight: 800 }}
+              >
+                <Navigation size={16} /> 📍 Track Live Order & Delivery
+              </button>
+
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => { setPlacedOrder(null); onClose(); }}
+                style={{ width: '100%', padding: '10px', fontSize: '0.85rem' }}
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         ) : (
+
           <>
             {/* Items List */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>

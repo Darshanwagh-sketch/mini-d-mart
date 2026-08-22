@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Clock, MapPin, RefreshCw, XCircle, CheckCircle2, Truck, Package, Store } from 'lucide-react';
+import { ShoppingBag, Clock, MapPin, RefreshCw, XCircle, CheckCircle2, Truck, Package, Store, Navigation } from 'lucide-react';
 import { api } from '../api';
+import DeliveryTrackerModal from './DeliveryTrackerModal';
 
 export default function CustomerDashboard({ user }) {
   const [orders, setOrders] = useState([]);
   const [returns, setReturns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrderForReturn, setSelectedOrderForReturn] = useState(null);
+  const [trackingOrderModal, setTrackingOrderModal] = useState(null);
   const [returnForm, setReturnForm] = useState({ orderItemId: '', requestType: 'RETURN', quantity: 1, reason: '' });
+
 
   useEffect(() => {
     fetchUserData();
@@ -192,11 +195,21 @@ export default function CustomerDashboard({ user }) {
                         <Truck size={18} style={{ color: 'var(--accent-purple)' }} />
                         <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Live Express Delivery Tracking</span>
                       </div>
-                      {order.trackingNumber && (
-                        <span style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#a5b4fc', fontSize: '0.75rem', padding: '3px 10px', borderRadius: 'var(--radius-full)', fontWeight: 700 }}>
-                          ID: {order.trackingNumber}
-                        </span>
-                      )}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        {order.trackingNumber && (
+                          <span style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#a5b4fc', fontSize: '0.75rem', padding: '3px 10px', borderRadius: 'var(--radius-full)', fontWeight: 700 }}>
+                            ID: {order.trackingNumber}
+                          </span>
+                        )}
+                        <button 
+                          className="btn btn-primary btn-sm" 
+                          onClick={() => setTrackingOrderModal(order)} 
+                          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 12px', fontSize: '0.78rem' }}
+                        >
+                          <Navigation size={14} /> 📍 Track Live GPS Map
+                        </button>
+                      </div>
+
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
@@ -315,6 +328,16 @@ export default function CustomerDashboard({ user }) {
           </div>
         </div>
       )}
+
+      {/* Delivery Tracking Live Map Modal */}
+      {trackingOrderModal && (
+        <DeliveryTrackerModal 
+          order={trackingOrderModal} 
+          onClose={() => setTrackingOrderModal(null)} 
+        />
+      )}
+
     </div>
   );
 }
+

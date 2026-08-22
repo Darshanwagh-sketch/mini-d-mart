@@ -194,7 +194,12 @@ export default function App() {
         stores={stores}
         selectedStore={selectedStore}
         onPlaceOrder={handlePlaceOrder}
+        onTrackOrder={(order) => {
+          setIsCartOpen(false);
+          setActiveView('customer');
+        }}
       />
+
 
       {/* Auth Modal */}
       <AuthModal 
