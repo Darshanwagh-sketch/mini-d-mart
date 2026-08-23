@@ -38,8 +38,15 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       onLoginSuccess(res);
       onClose();
     } catch (err) {
-      setError(err.message || 'Invalid credentials or registration details. Please try again.');
+      let msg = err.message;
+      if (!msg || msg === 'Internal Server Error' || msg === 'An error occurred' || msg.includes('500')) {
+        msg = isRegister 
+          ? 'This email address is already registered. Please try signing in instead.' 
+          : 'Invalid email or password. Please check your login details and try again.';
+      }
+      setError(msg);
     } finally {
+
       setSubmitting(false);
     }
   };
