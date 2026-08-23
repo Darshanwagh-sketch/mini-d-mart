@@ -49,6 +49,9 @@ public class OrderService {
                 .build();
 
         if (request.getOrderType() == OrderType.HOME_DELIVERY) {
+            if (request.getDeliveryAddress() == null || request.getDeliveryAddress().trim().length() < 5) {
+                throw new IllegalArgumentException("Delivery address is required for Home Delivery orders! Please provide a complete delivery address.");
+            }
             order.setTrackingNumber("TRK-DMART-" + generatePickupCode());
             order.setDeliveryPartner("D-Mart Express Rider");
             order.setDeliveryRiderName("Ramesh Kumar (Express Delivery)");
@@ -57,6 +60,7 @@ public class OrderService {
             order.setCurrentLatitude(19.1176);
             order.setCurrentLongitude(72.9060);
         } else if (request.getOrderType() == OrderType.STORE_PICKUP) {
+
             if (request.getStoreLocationId() == null) {
                 throw new IllegalArgumentException("Store location required for store pickup");
             }

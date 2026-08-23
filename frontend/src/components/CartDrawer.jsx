@@ -4,6 +4,7 @@ import { X, Trash2, Plus, Minus, Store, Truck, ArrowRight, CheckCircle2, Package
 export default function CartDrawer({ 
   isOpen, 
   onClose, 
+  user,
   cartItems, 
   onUpdateQty, 
   onRemoveItem, 
@@ -15,7 +16,8 @@ export default function CartDrawer({
 }) {
   const [orderType, setOrderType] = useState('HOME_DELIVERY');
   const [storeId, setStoreId] = useState(selectedStore?.id || stores[0]?.id || 1);
-  const [deliveryAddress, setDeliveryAddress] = useState('Flat 402, Sunshine Apartments, Bandra West, Mumbai');
+  const [deliveryAddress, setDeliveryAddress] = useState(user?.address || '');
+  const [addressError, setAddressError] = useState('');
   const [timeSlot, setTimeSlot] = useState('Today (Within 2 Hours)');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -29,12 +31,20 @@ export default function CartDrawer({
   const total = subtotal + tax + deliveryFee;
 
   const handleCheckout = async () => {
+    if (orderType === 'HOME_DELIVERY') {
+      if (!deliveryAddress || deliveryAddress.trim().length < 5) {
+        setAddressError('⚠️ Delivery address is required! Please enter your full delivery address before placing your order.');
+        return;
+      }
+    }
+    setAddressError('');
+
     try {
       setSubmitting(true);
       const payload = {
         orderType,
         storeLocationId: orderType === 'STORE_PICKUP' ? storeId : null,
-        deliveryAddress: orderType === 'HOME_DELIVERY' ? deliveryAddress : null,
+        deliveryAddress: orderType === 'HOME_DELIVERY' ? deliveryAddress.trim() : null,
         deliveryTimeSlot: timeSlot,
         notes
       };
@@ -46,6 +56,7 @@ export default function CartDrawer({
       setSubmitting(false);
     }
   };
+
 
   return (
     <div className="modal-overlay" onClick={onClose} style={{ justifyContent: 'flex-end', padding: 0 }}>
@@ -229,15 +240,42 @@ export default function CartDrawer({
                     </div>
                   ) : (
                     <div className="form-group">
-                      <label className="form-label">Delivery Address</label>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <label className="form-label" style={{ margin: 0, color: addressError ? '#ef4444' : '#fff' }}>
+                          Delivery Address <span style={{ color: '#ef4444' }}>* (Required)</span>
+                        </label>
+                        {user?.address && (
+                          <button 
+                            type="button" 
+                            style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}
+                            onClick={() => {
+                              setDeliveryAddress(user.address);
+                              setAddressError('');
+                            }}
+                          >
+                            Use Profile Address
+                          </button>
+                        )}
+                      </div>
                       <textarea 
                         className="form-control" 
                         rows={2} 
+                        placeholder="Required: House/Flat No, Building Name, Street, Area, Landmark..."
+                        style={{ borderColor: addressError ? '#ef4444' : 'var(--border-glass)', background: addressError ? 'rgba(239,68,68,0.1)' : undefined }}
                         value={deliveryAddress} 
-                        onChange={(e) => setDeliveryAddress(e.target.value)} 
+                        onChange={(e) => {
+                          setDeliveryAddress(e.target.value);
+                          if (e.target.value.trim().length >= 5) setAddressError('');
+                        }} 
                       />
+                      {addressError && (
+                        <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: 6, fontWeight: 700 }}>
+                          {addressError}
+                        </div>
+                      )}
                     </div>
                   )}
+
 
                   <div className="form-group">
                     <label className="form-label">Preferred Time Slot</label>
